@@ -51,12 +51,12 @@ function addEntity() {
                             var insertEntity = {
                                 PartitionKey: {'_': partitionKey},
                                 RowKey: {'_': rowKey},
-                                Proyecto: {'_': proyecto},
-                                CustomProperty1: {'_': customProperty1},
-                                CustomProperty2: {'_': customProperty2},
-                                Calificacion: {'_': calificacion},
-                                Comentarios: {'_': coments},
-                                Reporta: {'_': reporta}
+                                // Proyecto: {'_': proyecto},
+                                // CustomProperty1: {'_': customProperty1},
+                                // CustomProperty2: {'_': customProperty2},
+                                // Calificacion: {'_': calificacion},
+                                // Comentarios: {'_': coments},
+                                // Reporta: {'_': reporta}
                                 
                             };
 
@@ -217,37 +217,13 @@ function addEntity() {
                                     output.push('<tr><td>Sin resultados...</td></tr>');
                                 }
                                 for (var i = 0, entity; entity = results.entries[i]; i++) {
-                                    var reporta = '';
-                                    var ct1 = '';
-                                    var ct2 = '';
-                                    var calif = '';
-                                    var candidato = '';
-                                    var proyecto = '';
-                                    var coments = '';
                                     
-                                    if (typeof entity.CustomProperty1 !== 'undefined') {
-                                        ct1 = entity.CustomProperty1._;
-                                    }
+                                    // var ct1 = '';
+                                    // if (typeof entity.CustomProperty1 !== 'undefined') {
+                                    //     ct1 = entity.CustomProperty1._;
+                                    // }
 
-                                    if (typeof entity.CustomProperty2 !== 'undefined') {
-                                        ct2 = entity.CustomProperty2._;
-                                    }
-
-                                    if (typeof entity.Calificacion !== 'undefined') {
-                                        calif = entity.Calificacion._;
-                                    }
-                                    
-                                    if (typeof entity.Reporta !== 'undefined') {
-                                        reporta = entity.Reporta._;
-                                    }
-
-                                    if (typeof entity.Proyecto !== 'undefined') {
-                                        proyecto = entity.Proyecto._;
-                                    }
-                                    
-                                    if (typeof entity.Comentarios !== 'undefined') {
-                                        coments = entity.Comentarios._;
-                                    }
+                                  
 
                                     output.push('<tr>',
                                         '<td>', entity.PartitionKey._, '</td>', //bimestre
