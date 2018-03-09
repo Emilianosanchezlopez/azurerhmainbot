@@ -253,15 +253,7 @@ function addEntity() {
                                     output.push('<tr>',
                                         '<td>', entity.PartitionKey._, '</td>', //bimestre
                                         '<td>', entity.RowKey._, '</td>', //ingeniero
-                                        '<td>', reporta, '</td>', //a quien reporta
-                                        '<td>', proyecto, '</td>', //proyecto
-                                        '<td>', ct1, '</td>', //Certificaciones totales
-                                        '<td>', ct2, '</td>', //Certificaciones del último año
-                                        '<td>', calif, '</td>', //Calificación
-                                        '<td>', coments, '</td>', //Comentarios
                                         
-                                        // '<td>', entity.Timestamp._, '</td>',
-                                        // '<td>', '<button class="btn btn-xs btn-danger" onclick="deleteEntity(\'', entity.PartitionKey._ ,'\'', ',', '\'', entity.RowKey._ ,'\'',')">Delete</button>', '</td>',
                                         '</tr>');
                                     }
                                     document.getElementById('result').innerHTML = '<table class="table table-condensed table-bordered">' + output.join('') + '</table>';
