@@ -1,285 +1,105 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" media="screen" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>   
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <head>
+        <meta charset="utf-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Azure Storage JavaScript Client Library Sample for Table Operations</title>
+        <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>    
+
+    </head>
     
-    <title>Document</title>
-</head>
-<body>
-    <div class="hidden">
-        <label ><b>Storage account:</b> </label> <input type="text" id="account" value="encuestasmainbitstorage" disabled/> 
-        <label ><b>SAS Token:</b> </label> <input type="text" id="sas" value="?sv=2017-04-17&ss=bfqt&srt=sco&sp=rwdlacup&se=2019-01-31T22:37:01Z&st=2018-01-31T14:37:01Z&spr=https&sig=Gd3S6QLrII4Z2b2sjCDShttsGgVCmVkghaXKU%2Buoobo%3D" disabled/>
-    </div>
-
-    <h3> Tabla de resultados </h3>
-    <div id="result"></div>
-    <div class="" id="tables"></div>
-    <div class="">
-        <label ><b>Storage account:</b> </label> <input type="text" id="account" value="encuestasmainbitstorage" disabled/> 
-        <label ><b>SAS Token:</b> </label> <input type="text" id="sas" value="?sv=2017-04-17&ss=bfqt&srt=sco&sp=rwdlacup&se=2019-02-28T21:48:58Z&st=2018-02-12T13:48:58Z&spr=https&sig=cFYP5mhdBttpE%2FCl2JosXZlp7KwC3B8WDBJeCa59d2k%3D" disabled/>
-    </div>
-</body>
-
-<script>
-
-function addEntity() {
-                            var tableService = getTableService();
-                            if (!tableService)
-                            return;
-                            
-                            if (table == null || table.length < 1) {
-                                alert('Invalid table name!')
-                                return;
-                            }
-                            
-                            // var candidato= $('input[name=candidato]:checked').val();
-                            // var edad = document.getElementById('edad').value;
-                            var partitionKey = document.getElementById('pk').value;
-                            var rowKey = document.getElementById('rk').value;
-                            var proyecto = document.getElementById('proyecto').value;
-                            var reporta = document.getElementById('reporta').value;
-                            var coments = document.getElementById('coments').value;
-                            var customProperty1 = document.getElementById('ct1').value;
-                            var customProperty2 = document.getElementById('ct2').value;
-                            var calificacion = document.getElementById('cal-cert').value;
-                            var insertEntity = {
-                                PartitionKey: {'_': partitionKey},
-                                RowKey: {'_': rowKey},
-                                // Proyecto: {'_': proyecto},
-                                // CustomProperty1: {'_': customProperty1},
-                                // CustomProperty2: {'_': customProperty2},
-                                // Calificacion: {'_': calificacion},
-                                // Comentarios: {'_': coments},
-                                // Reporta: {'_': reporta}
-                                
-                            };
-
-                            
-                            
-                            tableService.insertOrMergeEntity(table, insertEntity, function(error, result, response) {
-                                if(error) {
-                                    alert('Insert table entity error, please open browser console to view detailed error');
-                                    console.log(error);
-            } else {
-                alert('Los datos se han guardado correctamente!');
-                refreshEntityList();
-                location.reload();
-            }
-        });
-        
-    };
-</script>
-<script>
-    var account = document.getElementById('account').value;
-    var sas = document.getElementById('sas').value;
-    var table = '';
-    var tableUri = '';
-    
-    function checkParameters() {
-        account = document.getElementById('account').value;
-        sas = document.getElementById('sas').value;
-        
-        if (account == null || account.length < 1)
-        {
-            alert('Please enter a valid storage account name!');
-            return false;
-        }
-        if (sas == null || sas.length < 1)
-        {
-            alert('Please enter a valid SAS Token!');
-            return false;
-        }
-        
-        return true;
-    }
-    
-    function getTableService() {
-        if (!checkParameters())
-        return null;
-        
-        tableUri = 'https://' + account + '.table.core.windows.net';
-        var tableService = AzureStorage.createTableServiceWithSas(tableUri, sas).withFilter(new AzureStorage.ExponentialRetryPolicyFilter());
-        return tableService;
-    }
-    
-    function refreshTableList()
-    {
-        var tableService = getTableService();
-        if (!tableService)
-        return;
-        
-        document.getElementById('tables').innerHTML = 'Loading table list...';
-        tableService.listTablesSegmented(null, {maxResults : 200}, function(error, results) {
-            if (error) {
-                alert('List table list error, please open browser console to view detailed error');
-                console.log(error);
-            } else {
-                var output = [];
-                output.push('<tr>',
-                    '<th>TableName</th>',
-                    '<th>Operations</th>',
-                            '</tr>');
-                            if (results.entries.length < 1) {
-                                output.push('<tr><td>Sin resultados...</td></tr>');
-                            }                                    
-                            for (var i = 0, table; table = results.entries[i]; i++) {
-                                output.push('<tr>',
-                                    '<td>', table, '</td>',
-                                    '<td>', '<button class="btn btn-xs btn-danger" onclick="deleteTable(\'', table ,'\')">Delete</button> ',
-                                        '<button class="btn btn-xs btn-success" onclick="viewTable(\'', table ,'\')">Select</button>', '</td>',
-                                        '</tr>');
-                                    }
-                                    document.getElementById('tables').innerHTML = '<table class="table table-condensed table-bordered">' + output.join('') + '</table>';
-                                }
-                            });
-                        }
-                        
-                        function createTable() {
-                            var tableService = getTableService();
-                            if (!tableService)
-                            return;
-                            
-                            var table = document.getElementById('newtable').value;
-                            if (!AzureStorage.Validate.tableNameIsValid(table, function(err, res){})) {
-                                alert('Invalid table name!');
-                                return;
-                            }
-                            tableService.createTableIfNotExists(table.toLowerCase(), function(error, result) {
-                                if (error) {
-                                    alert('Create table failed, open brower console for more detailed info.');
-                                    console.log(error);
-                                } else {
-                                    alert('Create ' + table + ' successfully!');
-                                    refreshTableList();
-                                }
-                            });
-                        }
-                        
-                        function deleteTable(table) {
-                            var tableService = getTableService();
-                            if (!tableService)
-                            return;
-                            
-                            tableService.deleteTableIfExists(table, function(error, result) {
-                                if (error) {
-                                    alert('Delete table failed, open brower console for more detailed info.');
-                                    console.log(error);
-                                } else {
-                                    alert('Delete ' + table + ' successfully!');
-                                    refreshTableList();
-                                }
-                            });
-                        }
-                        
-                        function viewTable(selectedTable) {
-                            table = selectedTable;
-                           
-                            refreshEntityList();
-                        }
-                        
-                        function refreshEntityList() {
-                            var tableService = getTableService();
-                            if (!tableService)
-                            return;
-                            
-                            if (table == null || table.length < 1) {
-                                alert('Please select a table from table list!')
-                                return;
-                            }
-                            
-                            document.getElementById('result').innerHTML = 'Cargando datos...';
-                            var tableQuery = new AzureStorage.TableQuery().top(200);
-                            tableService.queryEntities(table, tableQuery, null, function(error, results) {
-                                if (error) {
-                                    alert('List table entities error, please open browser console to view detailed error');
-                                    console.log(error);
-                                } else {
-                                    var output = [];
-                                    output.push('<tr>',
-                                        '<th>Bimestre evaluado</th>',
-                                        '<th>Ingeniero</th>',
-                                        '<th>Reporta a</th>',
-                                        '<th>Proyecto</th>',
-                                        '<th>Cert. totales</th>',
-                                        '<th>Cert. de este año</th>',
-                                        '<th>Calificación</th>',
-                                        '<th>Comentarios</th>',
-                                // '<th>Timestamp</th>',
-                                // '<th>Operations</th>',
-                                '</tr>');
-                                if (results.entries.length < 1) {
-                                    output.push('<tr><td>Sin resultados...</td></tr>');
-                                }
-                                for (var i = 0, entity; entity = results.entries[i]; i++) {
-                                    
-                                    // var ct1 = '';
-                                    // if (typeof entity.CustomProperty1 !== 'undefined') {
-                                    //     ct1 = entity.CustomProperty1._;
-                                    // }
-
-                                  
-
-                                    output.push('<tr>',
-                                        '<td>', entity.PartitionKey._, '</td>', //bimestre
-                                        '<td>', entity.RowKey._, '</td>', //ingeniero
-                                        
-                                        '</tr>');
-                                    }
-                                    document.getElementById('result').innerHTML = '<table class="table table-condensed table-bordered">' + output.join('') + '</table>';
-                                }
-                            });
-                        };
-                        
-    
-    function deleteEntity(partitionKey, rowKey) {
-        var tableService = getTableService();
-        if (!tableService)
-        return;
-        
-        if (table == null || table.length < 1) {
-            alert('Invalid table name!')
-            return;
-        }
-        
-        var deleteEntity = {
-            PartitionKey: {'_': partitionKey},
-            RowKey: {'_': rowKey}
-        };
-        
-        tableService.deleteEntity(table, deleteEntity, function(error, result, response) {
-            if(error) {
-                alert('Delete table entity error, please open browser console to view detailed error');
-                console.log(error);
-            } else {
-                alert('Delete table entity successfully!');
-                refreshEntityList();
-            }
-        });
-    };
-    $(document).ready(function () {
-        refreshTableList();
-        viewTable('evaluacionsst');//leer tabla
-    });
-    </script>
-    <script>
-        function showsend() {
-            $("#save").removeClass("hidden");
+    <body style="background-image: url(https://placeimg.com/998/999/nature); background-size:cover;"> 
+        <div class="container">
             
-        };
-            function rkvalue() {
-var name = document.getElementById("name").value;
-var last = document.getElementById("last").value;
-// var myrk = name.concat(last);
-var myrk = name +" "+last;
-document.getElementById("rk").value = myrk;   
-}
-            </script>
-<script src="js/azure-storage.common.js"></script> 
-<script src="js/azure-storage.table.js"></script> 
+            <h3> Actualización de datos</h3>
+           
+            <div class="col-lg-12">
+                    
+                    <!--información de Capacitación-->
+                    <div class="panel panel-default bg-danger">
+                          <div class="panel-heading bg-danger" >
+                            <h4>
+                                    Datos de la capacitación  
+                            </h4>
+                            </div>
+                          <div class="panel-body">
+                            
+<form class="col-lg-12" id="myForm" method="get" onsubmit="">
+                    <div class="col-lg-12">
+                              
+                            
+                              <p>Tipo de Capacitación</p>
+                    
+                    
+                          <label class="radio-inline"><input type="radio" name="op-1" value="Curso" checked="" >Curso</label>    
+                          
+                          <label class="radio-inline"><input type="radio" name="op-1" value="Exposición/Presentación" >Exposición/Presentación</label>    
+                          
+                          <label class="radio-inline"><input type="radio" name="op-1" value="Reunión" >Reunión</label> 
+                          <hr>
+                    </div>
+                    
+                    <div class="col-lg-12">
+                        <div class="input-group">
+                            <span class="input-group-addon">Nombre del tema</span>
+                            <input id="nombre" type="text" class="form-control"  value="" >
+                        </div>
+                        <br>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="input-group">
+                                    <span class="input-group-addon">Fecha</span>
+                                    <input id="fecha" class="form-control" type="text" value="" >
+                                </div>
+                                
+                                <br>
+                        
+                    
+                        <div class="input-group">
+                            <span class="input-group-addon">Lugar</span>
+                            <input id="lugar" type="text" class="form-control"  value="" >
+                        </div>
+                        <br>
+                    </div>
+                      <div class="col-lg-6">
+                    
+                    <div class="input-group">
+                        <span class="input-group-addon">Nombre del Expositor 1</span>
+                        <input id="expo1" type="text" class="form-control"  value="" >
+                      </div>
+                      <br>
+                    <div class="input-group">
+                        <span class="input-group-addon">Nombre del Expositor 2</span>
+                        <input id="expo2" type="text" class="form-control"  value="No aplica" >
+                      </div>
+                      </div>
+                       
+                          
+                        <div class="col-lg-12">
+
+                            <input class="btn btn-success" onclick="addEntity()" value="Enviar datos" />
+                        </div>
+                          </form>
+                          <div class="col-lg-12">
+                              <p></p>
+                          </div>
+
+<hr>
+                          <div class="col-lg-12" id="result"></div>
+
+                        </div>
+                        </div>
+                    
+                    </div>
+                    
+                </div>
+            
+            <script src="js/azure-storage.common.js"></script> 
+            <script src="js/azure-storage.table.js"></script> 
+            <script src="js/azure-functions.js"></script> 
+            
+            
+            <div class="hidden" id="tables"></div>
+    </body> 
 </html>
