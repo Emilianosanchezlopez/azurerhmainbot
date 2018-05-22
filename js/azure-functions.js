@@ -1,5 +1,5 @@
 var account = "encuestasmainbitstorage";
-var sas = "?sv=2017-07-29&ss=bfqt&srt=sco&sp=rwdlacup&se=2019-02-01T02:32:29Z&st=2018-05-22T17:32:29Z&spr=https&sig=dgwvau2OpyxF5JAbLMPJkW1fXjp5Q1j43rU6musSxdg%3D";
+var sas = "?sv=2017-07-29&ss=bfqt&srt=sco&sp=rwdlacup&se=2018-12-16T02:38:55Z&st=2018-05-22T17:38:55Z&spr=https&sig=u%2FTNuypRIeXWo9tab1M8wFKs%2F0LPORJv05wATF%2B93N4%3D";
 var table = '';
 var tableUri = '';
 
